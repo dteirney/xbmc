@@ -82,14 +82,12 @@
     <joystick name="WiiRemote">
       <button id="7">PageDown</button>
       <button id="9">PageUp</button>
-      <button id="10">Playlist</button>
     </joystick>
   </MyMusicFiles>
   <MyMusicLibrary>
     <joystick name="WiiRemote">
       <button id="7">PageDown</button>
       <button id="9">PageUp</button>
-      <button id="10">Playlist</button>
     </joystick>
   </MyMusicLibrary>
   <FullscreenVideo>
@@ -162,13 +160,15 @@
   </VideoBookmarks>
   <MyVideoLibrary>
     <joystick name="WiiRemote">
-      <button id="10">Playlist</button>
+      <button id="7">PageDown</button>
+      <button id="9">PageUp</button>
       <button id="11">Delete</button>
     </joystick>
   </MyVideoLibrary>
   <MyVideoFiles>
     <joystick name="WiiRemote">
-      <button id="10">Playlist</button>
+      <button id="7">PageDown</button>
+      <button id="9">PageUp</button>
       <button id="11">Delete</button>
     </joystick>
   </MyVideoFiles>
@@ -187,11 +187,6 @@
       <button id="11">BackSpace</button>
     </joystick>
   </VirtualKeyboard>
-  <Scripts>
-    <joystick name="WiiRemote">
-      <button id="11">Info</button>
-    </joystick>
-  </Scripts>
   <NumericInput>
     <joystick name="WiiRemote">
       <button id="11">BackSpace</button>
