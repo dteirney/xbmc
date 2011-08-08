@@ -104,11 +104,6 @@
       <button id="34">AnalogSeekForward</button>
     </joystick>
   </FullscreenVideo>
-  <FullscreenInfo>
-    <joystick name="WiiRemote">
-      <button id="11">CodecInfo</button>
-    </joystick>
-  </FullscreenInfo>
   <Visualisation>
     <joystick name="WiiRemote">
       <button id="3">SkipPrevious</button>
