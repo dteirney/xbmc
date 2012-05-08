@@ -517,7 +517,8 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
  */
 cmyth_recorder_t
 cmyth_livetv_chain_setup(cmyth_recorder_t rec, int tcp_rcvbuf,
-			 void (*prog_update_callback)(cmyth_proginfo_t))
+			 void (*prog_update_callback)(cmyth_proginfo_t),
+			 cmyth_database_t db)
 {
 
 	cmyth_recorder_t new_rec = NULL;
@@ -526,12 +527,20 @@ cmyth_livetv_chain_setup(cmyth_recorder_t rec, int tcp_rcvbuf,
 	cmyth_proginfo_t loc_prog, loc_prog2;
 	cmyth_file_t ft;
 	int i=0;
+	int tries = 0;
+	int res;
 
 
 	if (!rec) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no recorder connection\n",
 			  __FUNCTION__);
 		return NULL;
+	}
+
+	/* Check that any USB based LiveTV recorder is ready. */
+	while ((res = cmyth_mysql_check_livetv_recorder_ready(db)) == 1 && tries < 20) {
+		tries++;
+		sleep(1);
 	}
 
 	control = rec->rec_conn;
@@ -891,12 +900,11 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 	offset -= fp->file_req;
   }
 
-	pthread_mutex_lock(&mutex);
-
 	ret = cmyth_file_seek(fp, offset, whence);
 
 	PRINTF("** SSDEBUG: new pos %lld after seek command\n", ret);
 
+	pthread_mutex_lock(&mutex);
 	cur -= rec->rec_livetv_chain->chain_current;
 	if (ret >= 0 && cur) {
 		cmyth_livetv_chain_switch(rec, cur);
@@ -1035,7 +1043,8 @@ cmyth_livetv_get_block(cmyth_recorder_t rec, char *buf, unsigned long len)
 cmyth_recorder_t
 cmyth_spawn_live_tv(cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
 										void (*prog_update_callback)(cmyth_proginfo_t),
-										char ** err, char* channame)
+										char ** err, char* channame,
+										cmyth_database_t db)
 {
 	cmyth_recorder_t rtrn = NULL;
 	int i;
@@ -1048,7 +1057,7 @@ cmyth_spawn_live_tv(cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
 		}
  
 		if ((rtrn = cmyth_livetv_chain_setup(rec, tcp_rcvbuf,
-							prog_update_callback)) == NULL) {
+				prog_update_callback, db)) == NULL) {
 			*err = "Failed to setup livetv.";
 			goto err;
 		}

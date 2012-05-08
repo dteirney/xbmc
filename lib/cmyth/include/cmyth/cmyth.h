@@ -349,6 +349,9 @@ extern int cmyth_conn_get_protocol_version(cmyth_conn_t conn);
 extern char * cmyth_conn_get_setting(cmyth_conn_t conn,
                const char* hostname, const char* setting);
 
+char *
+cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting);
+
 /*
  * -----------------------------------------------------------------
  * Event Operations
@@ -534,12 +537,15 @@ extern int cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 extern cmyth_recorder_t cmyth_spawn_live_tv(cmyth_recorder_t rec,
 										unsigned buflen,
 										int tcp_rcvbuf,
-                    void (*prog_update_callback)(cmyth_proginfo_t),
-										char ** err, char * channame);
+										void (*prog_update_callback)(cmyth_proginfo_t),
+										char ** err,
+										char* channame,
+										cmyth_database_t db);
 
 extern cmyth_recorder_t cmyth_livetv_chain_setup(cmyth_recorder_t old_rec,
 						 int tcp_rcvbuf,
-						 void (*prog_update_callback)(cmyth_proginfo_t));
+						 void (*prog_update_callback)(cmyth_proginfo_t),
+						 cmyth_database_t db);
 
 extern int cmyth_livetv_get_block(cmyth_recorder_t rec, char *buf,
                                   unsigned long len);
@@ -558,6 +564,8 @@ extern int cmyth_livetv_read(cmyth_recorder_t rec,
 extern int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int keep);
 
 extern int mythtv_new_livetv(void);
+
+int cmyth_mysql_check_livetv_recorder_ready(cmyth_database_t db);
 
 /*
  * -----------------------------------------------------------------

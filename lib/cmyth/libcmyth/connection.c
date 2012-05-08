@@ -43,7 +43,6 @@
 #include <signal.h>
 #include <cmyth_local.h>
 
-static char * cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting);
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -1368,7 +1367,7 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 	return result;
 }
 
-static char *
+char *
 cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting)
 {
 	char msg[256];

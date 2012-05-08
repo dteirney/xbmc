@@ -1189,7 +1189,7 @@ int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int k
 
 	if(keep) {
 		char* str;
-		str = cmyth_conn_get_setting(rec->rec_conn, prog->proginfo_hostname, "AutoExpireDefault");
+		str = cmyth_conn_get_setting_unlocked(rec->rec_conn, prog->proginfo_hostname, "AutoExpireDefault");
 		if(!str) {
 			cmyth_dbg(CMYTH_DBG_ERROR, "%s: failed to get AutoExpireDefault\n", __FUNCTION__);
 			ref_release(prog);
@@ -1259,3 +1259,35 @@ int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int k
 	return 1;
 }
 
+int
+cmyth_mysql_check_livetv_recorder_ready(cmyth_database_t db)
+{
+	const char *query_str = "SELECT cardtype FROM tvchain ORDER by starttime DESC LIMIT 1";
+	cmyth_mysql_query_t * query;
+	MYSQL_RES *res = NULL;
+	MYSQL_ROW row;
+	char cardid[32];
+	int ret = 0;
+
+	query = cmyth_mysql_query_create(db, query_str);
+	res = cmyth_mysql_query_result(query);
+	ref_release(query);
+
+	if (res == NULL) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s, finalisation/execution of query failed!\n", __FUNCTION__);
+		ret = -1;
+	}
+
+	row = mysql_fetch_row(res);
+	strcpy(cardid, row[0]);
+	if (strcmp(cardid, "DUMMY") == 0) {
+		ret = 1;
+	}
+
+	cmyth_dbg(CMYTH_DBG_DEBUG, "%s, cardtype = %s, strcmp = %d, ret = %d\n", __FUNCTION__,
+		cardid, strcmp(cardid, "DUMMY"), ret);
+
+	mysql_free_result(res);
+
+	return ret;
+}

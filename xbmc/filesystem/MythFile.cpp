@@ -249,7 +249,7 @@ bool CMythFile::SetupLiveTV(const CURL& url)
     CLog::Log(LOGDEBUG, "%s - recorder isn't running, let's start it", __FUNCTION__);
 
   char* msg = NULL;
-  if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg, (char*)channel.c_str())))
+  if(!(m_recorder = m_dll->spawn_live_tv(m_recorder, 16*1024, 4096, prog_update_callback, &msg, (char*)channel.c_str(), m_database)))
   {
     CLog::Log(LOGERROR, "%s - unable to spawn live tv: %s", __FUNCTION__, msg ? msg : "");
     return false;
