@@ -129,7 +129,6 @@ cmyth_database_set_name(cmyth_database_t db, char *name)
 static int
 cmyth_db_check_connection(cmyth_database_t db)
 {
-    int new_conn = 0;
     if(db->mysql != NULL)
     {
 	/* Fetch the mysql stats (uptime and stuff) to check the connection is
@@ -143,7 +142,6 @@ cmyth_db_check_connection(cmyth_database_t db)
     if(db->mysql == NULL)
     {
 	db->mysql = mysql_init(NULL);
-	new_conn = 1;
 	if(db->mysql == NULL)
 	{
 	    fprintf(stderr,"%s: mysql_init() failed, insufficient memory?",
@@ -930,14 +928,13 @@ cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query)
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: mysql_query() Failed: %s\n", 
 			__FUNCTION__, mysql_error(db->mysql));
 	}
-
+	mysql_free_result(res);
 	return rows;
 }
 
 int
 cmyth_mysql_testdb_connection(cmyth_database_t db,char **message) {
 	char *buf=malloc(sizeof(char)*1001);
-	int new_conn = 0;
 	if (db->mysql != NULL) {
 		if (mysql_stat(db->mysql) == NULL) {
 			cmyth_database_close(db);
@@ -946,7 +943,6 @@ cmyth_mysql_testdb_connection(cmyth_database_t db,char **message) {
 	}
 	if (db->mysql == NULL) {
 		db->mysql = mysql_init(NULL);
-		new_conn = 1;
 		if(db->mysql == NULL) {
 			fprintf(stderr,"%s: mysql_init() failed, insufficient memory?", __FUNCTION__);
 			snprintf(buf, 1000, "mysql_init() failed, insufficient memory?");
@@ -1123,7 +1119,6 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 	MYSQL_ROW row;
 	const char *query_str = "SELECT chanid, channum, name, icon, visible FROM channel;";
 	int rows = 0;
-	int i;
 	cmyth_mysql_query_t * query;
 	cmyth_channel_t channel;
 	cmyth_chanlist_t chanlist;
@@ -1148,7 +1143,6 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 	}
 	memset(chanlist->chanlist_list, 0, chanlist->chanlist_count * sizeof(cmyth_chanlist_t));
 
-	i = 0;
 	while ((row = mysql_fetch_row(res))) {
 		channel = cmyth_channel_create();
 		channel->chanid = safe_atol(row[0]);
@@ -1157,7 +1151,6 @@ cmyth_chanlist_t cmyth_mysql_get_chanlist(cmyth_database_t db)
 		channel->icon = ref_strdup(row[3]);
 		channel->visible = safe_atoi(row[4]);
 		chanlist->chanlist_list[rows] = channel;
-		i = 0;
 		rows++;
 	}
 
