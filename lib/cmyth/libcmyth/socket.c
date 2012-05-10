@@ -2286,7 +2286,6 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 			ref_release(buf->proginfo_prodyear);
 		buf->proginfo_prodyear = ref_strdup(tmp_str);
   }
-	cmyth_dbg(CMYTH_DBG_INFO, "%s: got recording info\n", __FUNCTION__);
 
 	cmyth_proginfo_parse_url(buf);
 	return total;
