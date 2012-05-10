@@ -23,6 +23,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <cmyth_local.h>
 
 #include "debug.h"
