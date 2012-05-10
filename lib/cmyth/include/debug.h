@@ -54,7 +54,7 @@ mvp_dbg(mvp_debug_ctx_t *ctx, int level, char *fmt, va_list ap)
 		return;
 	}
 	if ((ctx->selector && ctx->selector(level, ctx->cur_level)) ||
-	    (!ctx->selector && (level < ctx->cur_level))) {
+	    (!ctx->selector && (level <= ctx->cur_level))) {
 		len = snprintf(msg, sizeof(msg), "(%s)", ctx->name);
 		vsnprintf(msg + len, sizeof(msg)-len, fmt, ap);
 		if (ctx->msg_callback) {
