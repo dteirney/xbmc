@@ -374,10 +374,12 @@ CMythSession::CMythSession(const CURL& url) : CThread("CMythSession")
   if (m_dll->IsLoaded())
   {
     m_dll->set_dbg_msgcallback(&CMythSession::LogCMyth);
-    if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    if (g_advancedSettings.m_logLevel >= LOG_LEVEL_MAX)
       m_dll->dbg_level(CMYTH_DBG_ALL);
     else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
-      m_dll->dbg_level(CMYTH_DBG_DETAIL);
+      m_dll->dbg_level(CMYTH_DBG_DEBUG);
+    else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_NORMAL)
+      m_dll->dbg_level(CMYTH_DBG_INFO);
     else
       m_dll->dbg_level(CMYTH_DBG_ERROR);
   }
