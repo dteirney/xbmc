@@ -407,7 +407,7 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 			  __FUNCTION__);
 		goto shut;
 	}
-	cmyth_dbg(CMYTH_DBG_ERROR,
+	cmyth_dbg(CMYTH_DBG_DEBUG,
 		  "%s: asked for version %ld, got version %ld\n",
 		  __FUNCTION__, conn->conn_version, tmp_ver);
 	if (conn->conn_version != tmp_ver) {
